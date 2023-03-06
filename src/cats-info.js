@@ -3,16 +3,24 @@ import {generateRating, printNumerals} from "./utils.js";
 export class CatsInfo {
     constructor(
         selectorTemplate,
-        // handleEditCatInfo,
-        // handleLikeCat,
+        handleEditCatInfo,
+        handleLikeCat,
         handleDeleteCat
         ) {
             this._selectorTemplate = selectorTemplate;
-            // this._handleEditCatInfo = handleEditCatInfo;
-            // this._handleLikeCat = handleLikeCat;
+            this._handleEditCatInfo = handleEditCatInfo;
+            this._handleLikeCat = handleLikeCat;
             this._handleDeleteCat = handleDeleteCat;
             this._data = {};    
     }
+
+    _updateViewLike(){
+        if(this._data.favorite) {
+            this.buttonLiked.classList.add('cat-info__favourite_active');
+        } else {
+            this.buttonLiked.classList.remove('cat-info__favourite_active');
+        } 
+    }  
 
     setData(cardInstance) {
         this._cardInstance = cardInstance; 
@@ -26,14 +34,42 @@ export class CatsInfo {
         this.catAgeText.textContent = printNumerals(this._data.age, ["год", "года", "лет"]);
 
         this.catRate.innerHTML =generateRating(this._data.rate);
-        console.log(this._data);           
+        
+        this._updateViewLike();
+
     }
+
+    _setLikeCat = () => {
+        this._data.favorite = !this._data.favorite;
+        this._updateViewLike();
+        this._handleLikeCat(this._data, this._cardInstance);
+    }
+
 
     _getTemplate(){ //возвращает содержимое шаблона в виде DOM-узла
         return document.querySelector(this._selectorTemplate).content.children[0];
     }
-    
-    _toggleContent
+     
+    _toggleContentEditable = () => {
+
+        this.buttonEdited.classList.toggle('cat-info__edited_hidden');
+        this.buttonSaved.classList.toggle('cat-info__saved_hidden');
+
+        this.catDesc.contentEditable = !this.catDesc.isContentEditable;
+        this.catName.contentEditable = !this.catName.isContentEditable;
+        this.catAge.contentEditable = !this.catAge.isContentEditable;
+    }   
+
+    _savedDataCats = () => {
+        this._toggleContentEditable();
+
+        this._data.name = this.catName.textContent;
+        this._data.age = Number(this.catAge.textContent);
+        this._data.description = this.catDesc.textContent;
+
+        this._handleEditCatInfo(this._cardInstance, this._data);
+    }
+
 
     getElement() {     
         this.element = this._getTemplate().cloneNode(true);
@@ -58,6 +94,11 @@ export class CatsInfo {
     }   
     
     setEventListener() {
-        this.buttonDeleted.addEventListener("click", ()=> this._handleDeleteCat(this._cardInstance));
+        this.buttonDeleted.addEventListener("click", ()=> 
+          this._handleDeleteCat(this._cardInstance)
+        );
+        this.buttonEdited.addEventListener("click", this._toggleContentEditable);
+        this.buttonSaved.addEventListener("click", this._savedDataCats);
+        this.buttonLiked.addEventListener("click", this._setLikeCat);
     }
 }       

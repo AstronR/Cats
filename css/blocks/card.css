@@ -62,7 +62,7 @@
 
 
 .card__like_active {
-    color: var(--tertiary-color);
+    color: red;
     --animate-duration: 1s;
     animation-name: heartBeat;
     animation-duration: calc(var(--animate-duration) * 1.3);

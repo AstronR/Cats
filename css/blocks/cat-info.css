@@ -52,7 +52,7 @@
 }
 
 .cat-info__favourite_active {
-    color: var(--tertiary-color);
+    color: red;
     border: none;
 }
 
