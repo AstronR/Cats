@@ -2,18 +2,18 @@ export class Card {
     #data;
     #selectorTemplate;
     #element;
-    #handleClickCatImage;
     #handleCatTitle;
+    #handleClickCatImage;
     #getTemplate(){
         const template = document.querySelector(this.#selectorTemplate).content.querySelector('.card');
         return template
     }
 
-    constructor(data, selectorTemplate, handleClickCatImage, handleCatTitle) {
+    constructor(data, selectorTemplate, handleCatTitle, handleClickCatImage) {
         this.#data = data;
         this.#selectorTemplate = selectorTemplate;
-        this.#handleClickCatImage = handleClickCatImage;
         this.#handleCatTitle = handleCatTitle;
+        this.#handleClickCatImage = handleClickCatImage;
     }
 
     getElement() {
@@ -29,17 +29,31 @@ export class Card {
             this.cardLikeElement.remove()
         }
 
-        this.cardImageElement.addEventListener('click', () => {
-            this.#handleClickCatImage(this.#data.image);
-        })
-
             this.setEventListener();
         //Наполнять карточку
         return this.#element;
     }
 
+    getData() {
+        return this.#data;
+    }
+
+    getId() {
+        return this.#data.id;
+    }
+
+    setData(newData) {
+        this.#data = newData;
+    }
+
+    deleteView() {
+        this.#element.remove();
+        this.#element = null;
+    }
+
     setEventListener() {
-        this.cardTitleElement.addEventListener('click', this.#handleCatTitle)
+        this.cardTitleElement.addEventListener('click', () => this.#handleCatTitle(this))
+        this.cardImageElement.addEventListener('click', () => this.#handleClickCatImage(this.#data))
     }
 
 
